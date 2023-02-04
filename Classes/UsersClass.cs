@@ -1,35 +1,90 @@
-﻿using System.Data;
+﻿using GalconWebApi.Models;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace GalconWebApi.Classes
 {
     public class UsersClass
     {
-        public DataTable GetUsersByRole(string role)
+        private readonly IConfiguration _config;
+        public UsersClass(IConfiguration config)
         {
-            DataTable dt = new DataTable();
+            _config = config;
+        }
+        public List<User> GetUsersByRole(string role)
+        {
+            List<User> users = new List<User>();
+            string connString = _config["DB_ConnectionString"].ToString();
+            SqlConnection conn = new SqlConnection(connString);
+            SqlCommand cmd = new SqlCommand("SP_GetUsersByRoleName", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@RoleName", role);           
             try
             {
-                string connString = "Data Source=DESKTOP-7CK70L3\\SQLEXPRESS; Initial Catalog=Assignment_Galcon_Sergey; Integrated Security=true;";
-                SqlConnection conn = new SqlConnection(connString);
                 conn.Open();
-                string query =  "SELECT * " +
-                                "FROM Users " +
-                                "INNER JOIN User_Role ON UR_ID = U_UR_ID " +
-                                "WHERE UPPER(UR_Name) = '" + role.ToUpper() + "'";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.CommandType = CommandType.Text;
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                adapter.Fill(dt);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while(reader.Read())
+                    {
+                        User user = new User
+                            (
+                                reader.GetInt32("UserID"),
+                                reader.GetString("Role"),
+                                reader.GetString("UserName"),
+                                reader.GetString("FirstName"),
+                                reader.GetString("LastName")
+                            );
+                        users.Add(user);
+                    }
+                }
+                reader.Close();
                 conn.Close();
-                adapter.Dispose();
+                
             }
-            catch (Exception ex)
+            catch
             {
-
-                throw;
+                conn.Close();
             }
-            return dt;
+            return users;
+        }
+
+        public User AuthenticateUser(UserLogin userLogin)
+        {
+            User user = null;
+            string connString = _config["DB_ConnectionString"].ToString();
+            SqlConnection conn = new SqlConnection(connString);
+            SqlCommand cmd = new SqlCommand("SP_GetUserByUserNameAndPassword", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UserName", userLogin.UserName);
+            cmd.Parameters.AddWithValue("@Password", userLogin.Password);
+            try
+            {
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        user = new User
+                            (
+                                reader.GetInt32("UserID"),
+                                reader.GetString("Role"),
+                                reader.GetString("UserName"),
+                                reader.GetString("FirstName"),
+                                reader.GetString("LastName")
+                            );                       
+                    }
+                }
+                reader.Close();
+                conn.Close();
+            }
+            catch
+            {
+                conn.Close();
+            }
+
+            return user;
         }
     }
 }

@@ -1,35 +1,88 @@
-﻿using System.Data;
+﻿using GalconWebApi.Models;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace GalconWebApi.Classes
 {
     public class OrdersClass
     {
-        public DataTable GetOrdersByUser(int user)
+        private readonly IConfiguration _config;
+        public OrdersClass(IConfiguration config)
         {
-            DataTable dt = new DataTable();
+            _config = config;
+        }
+        public List<Order> GetOrdersByUser(int user)
+        {
+            List<Order> orders = new List<Order>();
+            string connString = _config["DB_ConnectionString"].ToString();
+            SqlConnection conn = new SqlConnection(connString);
+            SqlCommand cmd = new SqlCommand("SP_GetOrdersByUser", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UserID", user);
             try
             {
-                string connString = "Data Source=DESKTOP-7CK70L3\\SQLEXPRESS; Initial Catalog=Assignment_Galcon_Sergey; Integrated Security=true;";
-                SqlConnection conn = new SqlConnection(connString);
                 conn.Open();
-                string query =  "SELECT * " +
-                                "FROM Orders " +
-                                "INNER JOIN Users ON U_ID = O_U_ID " +
-                                "WHERE O_U_ID = " + user.ToString() ;
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.CommandType = CommandType.Text;
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                adapter.Fill(dt);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        Order order = new Order
+                            (
+                                reader.GetInt32("OrderID"),
+                                reader.GetInt32("UserID"),
+                                reader.GetDecimal("TotalPrice"),
+                                reader.GetDateTime("OrderDate")                            
+                            );
+                        orders.Add(order);
+                    }
+                }
+                reader.Close();
                 conn.Close();
-                adapter.Dispose();
             }
-            catch (Exception ex)
+            catch
             {
-
-                throw;
+                conn.Close();
             }
-            return dt;
+            return orders;
+        }
+
+        public List<Order> GetOrdersByUserAndDates(int user, string from, string to)
+        {
+            List<Order> orders = new List<Order>();
+            string connString = _config["DB_ConnectionString"].ToString();
+            SqlConnection conn = new SqlConnection(connString);
+            SqlCommand cmd = new SqlCommand("SP_GetOrdersByUserAndDates", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UserID", user);
+            cmd.Parameters.AddWithValue("@From", from);
+            cmd.Parameters.AddWithValue("@To", to);
+            try
+            {
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        Order order = new Order
+                            (
+                                reader.GetInt32("OrderID"),
+                                reader.GetInt32("UserID"),
+                                reader.GetDecimal("TotalPrice"),
+                                reader.GetDateTime("OrderDate")
+                            );
+                        orders.Add(order);
+                    }
+                }
+                reader.Close();
+                conn.Close();
+            }
+            catch
+            {
+                conn.Close();
+            }
+            return orders;
         }
     }
 }
