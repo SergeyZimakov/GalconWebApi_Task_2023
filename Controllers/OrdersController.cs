@@ -70,7 +70,7 @@ namespace GalconWebApi.Controllers
                     if (orders.Count > 0) // user has orders 
                     {
                         // get only orders between dates
-                        orders = orders.FindAll(o => o.OrderDate >= MyDatesClass.ConvertDateFromQueryToDateTime(from) && o.OrderDate <= MyDatesClass.ConvertDateFromQueryToDateTime(to));
+                        orders = orders.FindAll(o => o.OrderDate >= MyDatesClass.ConvertDateFromQueryToDateTime(from) && o.OrderDate < MyDatesClass.ConvertDateFromQueryToDateTime(to).AddDays(1));
                         
                         // calculate total price(set null if its no orders between dates)
                         totalPrice = orders.Count > 0 ? orders.Sum(o => o.TotalPrice) : (decimal?)null;

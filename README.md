@@ -24,12 +24,13 @@
 	To authorize get token from login response, choose Bearer Token Authorization Type and put there the token from response
 
 	- login:
-		* route - http://localhost:1205/api/login
+		* route - http://localhost:1205/api/auth/login
 		* method - post
 		* body - {"UserName": "", "Password": ""}
+		* body format - json
 		* if user successfuly logged in, the response will include JWT token, that required to access next endpoints
 		* for example:
-			post http://localhost:1205/api/login body: {"UserName": "user1", "Password": "user1"}
+			post http://localhost:1205/api/auth/login body: {"UserName": "user1", "Password": "user1"}
 	
 	- users by role:
 		* route - http://localhost:1205/api/users/role
