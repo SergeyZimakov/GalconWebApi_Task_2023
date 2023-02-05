@@ -69,9 +69,9 @@ namespace GalconWebApi.Controllers
 
             JwtSecurityToken token = new JwtSecurityToken
             (
-                _config["Jwt:Issuer"].ToString(),
-                _config["Jwt:Audience"].ToString(),
-                claims,
+                //_config["Jwt:Issuer"].ToString(),
+                //_config["Jwt:Audience"].ToString(),
+                claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: credentials
             );

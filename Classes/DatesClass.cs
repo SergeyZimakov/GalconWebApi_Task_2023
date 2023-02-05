@@ -30,7 +30,6 @@
 
         public DateTime ConvertDateFromQueryToDateTime(string date)
         {
-            // set date from query(dd/mm/yyyy) to db format(yyyymmdd)
             string[] dateArr = date.Split('/');
             return new DateTime(Convert.ToInt32(dateArr[2]), Convert.ToInt32(dateArr[1]), Convert.ToInt32(dateArr[0]));
         }

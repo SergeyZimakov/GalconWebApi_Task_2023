@@ -83,7 +83,6 @@ namespace GalconWebApi.Classes
             {
                 conn.Close();
             }
-
             return user;
         }
     }

@@ -45,44 +45,6 @@ namespace GalconWebApi.Classes
                 conn.Close();
             }
             return orders;
-        }
-
-        public List<Order> GetOrdersByUserAndDates(int user, string from, string to)
-        {
-            List<Order> orders = new List<Order>();
-            string connString = _config["DB_ConnectionString"].ToString();
-            SqlConnection conn = new SqlConnection(connString);
-            SqlCommand cmd = new SqlCommand("SP_GetOrdersByUserAndDates", conn);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@UserID", user);
-            cmd.Parameters.AddWithValue("@From", from);
-            cmd.Parameters.AddWithValue("@To", to);
-            try
-            {
-                conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        Order order = new Order
-                            (
-                                reader.GetInt32("OrderID"),
-                                reader.GetInt32("UserID"),
-                                reader.GetDecimal("TotalPrice"),
-                                reader.GetDateTime("OrderDate")
-                            );
-                        orders.Add(order);
-                    }
-                }
-                reader.Close();
-                conn.Close();
-            }
-            catch
-            {
-                conn.Close();
-            }
-            return orders;
-        }
+        }       
     }
 }
