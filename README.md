@@ -46,9 +46,9 @@
 		if you will not provide user in query string, the API will return all orders without filter by user
 
 	- total price by user and dates:
-		* route - http://localhost:1205/api/orders?user=N&from=dd/mm/yyyy&to=dd/mm/yyyy
+		* route - http://localhost:1205/api/orders/total?user=N&from=dd/mm/yyyy&to=dd/mm/yyyy
 		* method - get
 		* for example:
-			get http://localhost:1205/api/orders?user=2&from=02/01/2023&to=15/01/2023
+			get http://localhost:1205/api/orders/total?user=2&from=02/01/2023&to=15/01/2023
 		Dates must be in DD/MM/YYYY format
 		All query parameters are required
