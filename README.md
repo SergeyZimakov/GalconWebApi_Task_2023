@@ -50,6 +50,6 @@
 		* route - http://localhost:1205/api/orders/total?user=N&from=dd/mm/yyyy&to=dd/mm/yyyy
 		* method - get
 		* for example:
-			get http://localhost:1205/api/orders/total?user=2&from=02/01/2023&to=15/01/2023
+			get http://localhost:1205/api/orders/total?user=2&from=01/01/2023&to=31/01/2023
 		Dates must be in DD/MM/YYYY format
 		All query parameters are required
