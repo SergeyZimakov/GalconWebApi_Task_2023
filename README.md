@@ -20,8 +20,8 @@
 	- Data Base includes orders for each user(all orders made in different days of Jan 2023)
 
 ## Endpoints:
-	> All endpoints except of login require authorization
-	> To authorize get token from login response, choose Bearer Token Authorization Type and put there the token from response
+	**_All endpoints except of login require authorization_**
+	**_To authorize get token from login response, choose Bearer Token Authorization Type and put there the token from response_**
 
 	- login:
 		* route - http://localhost:1205/api/login
@@ -43,12 +43,12 @@
 		* method - get
 		* for example:
 			get http://localhost:1205/api/orders?user=2
-		> if you will not provide user in query string, the API will return all orders without filter by user
+		*if you will not provide user in query string, the API will return all orders without filter by user*
 
 	- total price by user and dates:
 		* route - http://localhost:1205/api/orders?user=N&from=dd/mm/yyyy&to=dd/mm/yyyy
 		* method - get
 		* for example:
 			get http://localhost:1205/api/orders?user=2&from=02/01/2023&to=15/01/2023
-		> Dates must be in DD/MM/YYYY format
-		> All query parameters are required
+		*Dates must be in DD/MM/YYYY format*
+		*All query parameters are required*
