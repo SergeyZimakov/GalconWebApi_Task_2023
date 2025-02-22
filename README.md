@@ -1,4 +1,4 @@
-# GalconWebApi
+# GalconWebApi_Task_2023
 
 ## Installation:
 	- Open CMD
